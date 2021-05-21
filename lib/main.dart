@@ -53,20 +53,21 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                RaisedButton(
-                  color: Colors.blueAccent,
+                ElevatedButton(
                   child: Text("ADD"),
-                  textColor: Colors.white70,
                   onPressed: addTodo,
                 )
               ],
             ),
           ),
           Expanded(
-            child: RefreshIndicator(onRefresh: _refresh, child: ListView.builder(
-                padding: EdgeInsets.only(top: 10.0),
-                itemCount: _todoList.length,
-                itemBuilder: buildItem),),
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: ListView.builder(
+                  padding: EdgeInsets.only(top: 10.0),
+                  itemCount: _todoList.length,
+                  itemBuilder: buildItem),
+            ),
           ),
         ],
       ),
@@ -118,8 +119,8 @@ class _HomeState extends State<Home> {
                 }),
             duration: Duration(seconds: 2),
           );
-          Scaffold.of(context).removeCurrentSnackBar();
-          Scaffold.of(context).showSnackBar(snack);
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(snack);
         });
       },
     );
@@ -163,14 +164,17 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future<Null> _refresh() async{
+  Future<Null> _refresh() async {
     await Future.delayed(Duration(seconds: 1));
 
     setState(() {
       _todoList.sort((a, b) {
-        if(a["ok"] && !b["ok"]) return 1;
-        else if(!a["ok"] && b["ok"]) return -1;
-        else return 0;
+        if (a["ok"] && !b["ok"])
+          return 1;
+        else if (!a["ok"] && b["ok"])
+          return -1;
+        else
+          return 0;
       });
 
       _saveData();
@@ -178,5 +182,4 @@ class _HomeState extends State<Home> {
 
     return null;
   }
-
 }
