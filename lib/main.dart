@@ -16,8 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List _todoList = [];
   Map<String, dynamic> _lastRemoved = Map();
-  int _lastRemovedPos;
-
+  int _lastRemovedPos = 0;
   TextEditingController _todoController = TextEditingController();
 
   @override
@@ -138,12 +137,8 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> _readData() async {
-    try {
-      final file = await _getFile();
-      return file.readAsString();
-    } catch (e) {
-      return null;
-    }
+    final file = await _getFile();
+    return file.readAsString();
   }
 
   void addTodo() {
