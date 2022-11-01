@@ -33,9 +33,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Scaffold screen = Scaffold(
       appBar: AppBar(
-        title: Text("Lista de Tarefas"),
-        backgroundColor: Colors.blueAccent,
-        centerTitle: true,
+        title: Text('Lista de Tarefas'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[Colors.purple, Colors.blue]),
+          ),
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -47,15 +53,16 @@ class _HomeState extends State<Home> {
                   child: TextField(
                     controller: _todoController,
                     decoration: InputDecoration(
-                      labelText: "Nova Tarefa",
+                      labelText: "Tarefa",
                       labelStyle: TextStyle(color: Colors.blueAccent),
                     ),
                   ),
                 ),
                 ElevatedButton(
-                  child: Text("ADD"),
                   onPressed: addTodo,
-                )
+                  child: Text('+ Adicionar'),
+                  style: ElevatedButton.styleFrom(shape: StadiumBorder()),
+                ),
               ],
             ),
           ),
@@ -141,15 +148,46 @@ class _HomeState extends State<Home> {
     return file.readAsString();
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Tarefa não adicionada'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Para adicionar digite o nome da tarefa!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void addTodo() {
-    setState(() {
-      Map<String, dynamic> newTodo = Map();
-      newTodo["title"] = _todoController.text;
-      _todoController.text = "";
-      newTodo["ok"] = false;
-      _todoList.add(newTodo);
-      _saveData();
-    });
+    if (_todoController.text.isNotEmpty) {
+      setState(() {
+        Map<String, dynamic> newTodo = Map();
+        newTodo["title"] = _todoController.text;
+        _todoController.text = "";
+        newTodo["ok"] = false;
+        _todoList.add(newTodo);
+        _saveData();
+      });
+    } else {
+      _showMyDialog();
+    }
   }
 
   void checkTodo(index, c) {
